@@ -28,6 +28,9 @@ namespace Conversator
                 OnPropertyChanged("UserText");
             }
         }
+
+        [WireUp]
+        public ConversationEngine ConversationEngine { get; set; }
         #endregion
 
         public MainViewModel()
