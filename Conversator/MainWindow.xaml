@@ -2,8 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:lib12="http://schemas.kkalinowski.net/lib12"
+        xmlns:local="clr-namespace:Conversator"
+        DataContext="{lib12:Inject Type=local:MainViewModel}"
         Title="Conversator" Height="350" Width="525">
-    <Grid>
-        
+    
+    <Grid lib12:FluidGrid.Rows="*,50" lib12:FluidGrid.Columns="*,150">
+        <TextBox Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Text}"/>
+        <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding UserText}"
+                 mah:TextboxHelper.Watermark="Say..." mah:TextboxHelper.ClearTextButton="True"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="Say"/>
     </Grid>
 </mah:MetroWindow>
