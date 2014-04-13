@@ -1,8 +1,9 @@
-﻿<Window x:Class="Conversator.MainWindow"
+﻿<mah:MetroWindow x:Class="Conversator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="Conversator" Height="350" Width="525">
     <Grid>
         
     </Grid>
-</Window>
+</mah:MetroWindow>
