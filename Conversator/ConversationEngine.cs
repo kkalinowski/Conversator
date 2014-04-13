@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.IO;
+using System.Net.Mime;
+using System.Windows.Forms;
 using lib12.DependencyInjection;
 using mshtml;
 
@@ -10,26 +12,64 @@ namespace Conversator
         private const string ConversatorAddress = "http://www.cleverbot.com/";
         private const string SayItButtonId = "sayit";
         private const string SayItTextBoxId = "stimulus";
+        private const int WaitTime = 100000;
 
-        private readonly WebBrowser browser;
-        private readonly IHTMLDocument2 document;
-        private readonly dynamic sayItButton;
-        private readonly dynamic sayItTextBox;
+        private WebBrowser browser;
+        private IHTMLDocument2 document;
+        private dynamic sayItButton;
+        private dynamic sayItTextBox;
 
         public ConversationEngine()
         {
-            browser = new WebBrowser();
-            browser.Navigate(ConversatorAddress);
-            document = (IHTMLDocument2)browser.Document;
-            sayItButton = document.all.item(SayItButtonId);
-            sayItTextBox = document.all.item(SayItTextBoxId);
+            InitBrowser(ConversatorAddress);
         }
 
         public string Say(string text)
         {
-            sayItTextBox.value = text;
-            sayItButton.click();
+            sayItTextBox.Value = text;
+            sayItButton.Click();
             return text + text;
+        }
+
+        private void InitBrowser(string url)
+        {
+            browser = new WebBrowser();
+            browser.ScriptErrorsSuppressed = true;
+            browser.Navigate(url);
+
+            WaitTillLoad();
+
+            document = (IHTMLDocument2)browser.Document.DomDocument;
+            sayItButton = document.all.item(SayItButtonId);
+            sayItTextBox = document.all.item(SayItTextBoxId);
+        }
+
+        private void WaitTillLoad()
+        {
+            WebBrowserReadyState loadStatus;
+            var counter = 0;
+            while (true)
+            {
+                loadStatus = browser.ReadyState;
+                Application.DoEvents();
+                if ((counter > WaitTime) || (loadStatus == WebBrowserReadyState.Uninitialized)
+                    || (loadStatus == WebBrowserReadyState.Loading) || (loadStatus == WebBrowserReadyState.Interactive))
+                    break;
+
+                counter++;
+            }
+
+            counter = 0;
+            while (true)
+            {
+                loadStatus = browser.ReadyState;
+                Application.DoEvents();
+                if (loadStatus == WebBrowserReadyState.Complete && browser.IsBusy != true)
+                {
+                    break;
+                }
+                counter++;
+            }
         }
     }
 }
