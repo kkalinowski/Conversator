@@ -20,14 +20,20 @@ namespace Conversator
 
         private void LoadGrammars()
         {
-            var dictation = new DictationGrammar();
-            dictation.Name = "Dictation Grammar";
+            var dictation = new DictationGrammar { Name = "Dictation Grammar" };
             recognitionEngine.LoadGrammar(dictation);
         }
 
         public void Recognize()
         {
-            recognitionEngine.RecognizeAsync();
+            try
+            {
+                recognitionEngine.RecognizeAsync();
+            }
+            catch
+            {
+
+            }
         }
 
         public void SubscribeForRecognizedText(EventHandler<RecognizeCompletedEventArgs> action)

@@ -22,7 +22,6 @@ namespace Conversator
         #endregion
 
         #region Fields
-        private readonly List<string> conversation;
         private readonly Timers.Timer timer;
         #endregion
 
@@ -58,7 +57,6 @@ namespace Conversator
         public ConversationEngine()
         {
             ConversationText = string.Empty;
-            conversation = new List<string>();
             InitBrowser(ConversatorAddress);
             timer = new Timers.Timer(TimerInterval);
             timer.Elapsed += timer_Elapsed;
@@ -158,7 +156,6 @@ namespace Conversator
 
         private void AddTextToConversation(string text)
         {
-            conversation.Add(text);
             ConversationText += string.Format("- {0}\n", text);
         }
     }

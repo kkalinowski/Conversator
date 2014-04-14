@@ -46,7 +46,10 @@ namespace Conversator
         private void SpeechRecognized(object sender, RecognizeCompletedEventArgs e)
         {
             if (e.Result != null)
+            {
                 UserText = e.Result.Text;
+                CommandManager.InvalidateRequerySuggested();
+            }
 
         }
 
