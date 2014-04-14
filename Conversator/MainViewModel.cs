@@ -7,17 +7,6 @@ namespace Conversator
     public class MainViewModel : NotifyingObject
     {
         #region Properties
-        private string text;
-        public string Text
-        {
-            get { return text; }
-            set
-            {
-                text = value;
-                OnPropertyChanged("Text");
-            }
-        }
-
         private string userText;
         public string UserText
         {

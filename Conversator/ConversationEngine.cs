@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using lib12.DependencyInjection;
 using lib12.Extensions;
+using lib12.WPF.Core;
 using mshtml;
 using System;
 using System.Collections.Generic;
@@ -10,57 +11,56 @@ using Timers = System.Timers;
 namespace Conversator
 {
     [Singleton]
-    public class ConversationEngine
+    public class ConversationEngine : NotifyingObject
     {
+        #region Const
         private const string ConversatorAddress = "http://www.cleverbot.com/";
         private const string SayItButtonId = "sayit";
         private const string SayItTextBoxId = "stimulus";
-        private const string BotSayId = "bot";
         private const int WaitTime = 100000;
         private const int TimerInterval = 500;
+        #endregion
 
+        #region Fields
         private readonly List<string> conversation;
-        private string conversationText;
-
         private readonly Timers.Timer timer;
+        private int answersCount = 0;
+        #endregion
 
+        #region Properties
         public WebBrowser Browser { get; set; }
 
+        private string conversationText;
+        public string ConversationText
+        {
+            get { return conversationText; }
+            set
+            {
+                conversationText = value;
+                OnPropertyChanged("ConversationText");
+            }
+        }
+
+        private bool isWaitingForAnswer;
+        public bool IsWaitingForAnswer
+        {
+            get { return isWaitingForAnswer; }
+            set
+            {
+                isWaitingForAnswer = value;
+                OnPropertyChanged("IsWaitingForAnswer");
+            }
+        }
+        #endregion
+
+        #region Init
         public ConversationEngine()
         {
-            conversationText = string.Empty;
+            ConversationText = string.Empty;
             conversation = new List<string>();
             InitBrowser(ConversatorAddress);
             timer = new Timers.Timer(TimerInterval);
             timer.Elapsed += timer_Elapsed;
-        }
-
-        public string Say(string text)
-        {
-            var document = (IHTMLDocument2)Browser.Document.DomDocument;
-            var sayItButton = document.all.item(SayItButtonId);
-            var sayItTextBox = document.all.item(SayItTextBoxId);
-
-            sayItTextBox.Value = text;
-            sayItButton.Click();
-
-            conversation.Add(text);
-            conversationText = conversationText + text + Environment.NewLine;
-
-            document = (IHTMLDocument2)Browser.Document.DomDocument;
-            //var botText = document.all.item("bot");
-            var agilityDocument = new HtmlAgilityPack.HtmlDocument();
-            agilityDocument.LoadHtml(document.activeElement.innerHTML);
-            var bots = agilityDocument.DocumentNode.SelectNodes("//tr[@class='bot']");
-            if (bots.NotNull())
-            {
-                var lastText = bots.LastOrDefault().InnerText.Trim() + Environment.NewLine;
-                conversation.Add(lastText);
-                conversationText += lastText;
-            }
-
-            //timer.Enabled = true;
-            return conversationText;
         }
 
         private void InitBrowser(string url)
@@ -97,12 +97,64 @@ namespace Conversator
                 counter++;
             }
         }
+        #endregion
+
+        public void Say(string text)
+        {
+            var document = (IHTMLDocument2)Browser.Document.DomDocument;
+            var sayItButton = document.all.item(SayItButtonId);
+            var sayItTextBox = document.all.item(SayItTextBoxId);
+
+            sayItTextBox.Value = text;
+            sayItButton.Click();
+
+            conversation.Add(text);
+            ConversationText = ConversationText + text + Environment.NewLine;
+
+            IsWaitingForAnswer = true;
+            timer.Enabled = true;
+        }
 
         void timer_Elapsed(object sender, Timers.ElapsedEventArgs e)
         {
             timer.Enabled = false;
-            //var document = (IHTMLDocument2)Browser.Document.DomDocument;
-            //var botText = document.all.item("bot");
+            InvokeOnFormBrowserThread(ParseAnswer);
+        }
+
+        private void InvokeOnFormBrowserThread(Action action)
+        {
+            if (Browser.IsHandleCreated && Browser.InvokeRequired)
+            {
+                Browser.Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+
+        private void ParseAnswer()
+        {
+            var document = (IHTMLDocument2)Browser.Document.DomDocument;
+            dynamic form = document.forms.item();
+            var agilityDocument = new HtmlAgilityPack.HtmlDocument();
+
+
+            agilityDocument.LoadHtml(form.innerHTML);
+            var shareIcon = agilityDocument.DocumentNode.SelectSingleNode("//span[@id='snipTextIcon']");
+            var bots = agilityDocument.DocumentNode.SelectNodes("//tr[@class='bot']");
+            if (shareIcon.NotNull() && bots.NotNull() && bots.Count > answersCount)
+            {
+                var lastText = bots.LastOrDefault().InnerText.Trim() + Environment.NewLine;
+                conversation.Add(lastText);
+                ConversationText += lastText;
+                answersCount++;
+                IsWaitingForAnswer = false;
+            }
+            else
+            {
+                timer.Enabled = true;
+            }
         }
     }
 }

@@ -17,7 +17,8 @@ namespace Conversator
 
         public virtual bool CanExecute(object parameter)
         {
-            return MainViewModel.UserText.IsNotNullAndNotEmpty();
+            return MainViewModel.UserText.IsNotNullAndNotEmpty()
+                && !MainViewModel.ConversationEngine.IsWaitingForAnswer;
         }
         #endregion
 
@@ -29,7 +30,7 @@ namespace Conversator
         #region Execute
         public void Execute(object parameter)
         {
-            MainViewModel.Text = MainViewModel.ConversationEngine.Say(MainViewModel.UserText);
+            MainViewModel.ConversationEngine.Say(MainViewModel.UserText);
             MainViewModel.UserText = string.Empty;
         }
         #endregion
