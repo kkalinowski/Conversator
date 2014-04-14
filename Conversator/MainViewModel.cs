@@ -1,4 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Speech.Recognition;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 using lib12.DependencyInjection;
 using lib12.WPF.Core;
 using lib12.WPF.EventTranscriptions;
@@ -23,6 +27,8 @@ namespace Conversator
         [WireUp]
         public ConversationEngine ConversationEngine { get; set; }
 
+        public SpeechRecognizer SpeechRecognizer { get; set; }
+
         public ICommand KeyboardCommand { get; private set; }
 
         [WireUp]
@@ -33,6 +39,15 @@ namespace Conversator
         public MainViewModel()
         {
             KeyboardCommand = new DelegateCommand<EventTranscriptionParameter<KeyEventArgs>>(ExecuteKeyboard);
+            SpeechRecognizer = Instances.Get<SpeechRecognizer>();
+            SpeechRecognizer.SubscribeForRecognizedText(SpeechRecognized);
+        }
+
+        private void SpeechRecognized(object sender, RecognizeCompletedEventArgs e)
+        {
+            if (e.Result != null)
+                UserText = e.Result.Text;
+
         }
 
         private void ExecuteKeyboard(EventTranscriptionParameter<KeyEventArgs> parameter)

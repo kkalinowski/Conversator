@@ -12,13 +12,14 @@
     </lib12:EventTranscriptions.Transcriptions>
 
     <Grid lib12:FluidGrid.StackColumns="2">
-        <Grid Grid.Column="0" lib12:FluidGrid.Rows="*,32" lib12:FluidGrid.Columns="*,110">
-            <TextBox Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding ConversationEngine.ConversationText}" IsReadOnly="True" Margin="3"
+        <Grid Grid.Column="0" lib12:FluidGrid.Rows="*,32" lib12:FluidGrid.Columns="*,110,110">
+            <TextBox Grid.Row="0" Grid.ColumnSpan="3" Text="{Binding ConversationEngine.ConversationText}" IsReadOnly="True" Margin="3"
                      TextWrapping="Wrap"/>
             <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding UserText, UpdateSourceTrigger=PropertyChanged}"
                  mah:TextboxHelper.Watermark="Say..." mah:TextboxHelper.ClearTextButton="True" Margin="3"/>
             <Button Grid.Row="1" Grid.Column="1" Command="{Binding SayCommand}" Margin="3"
                     Content="{Binding ConversationEngine.IsWaitingForAnswer, Converter={local:ContentConverter}}"/>
+            <Button Grid.Row="1" Grid.Column="2" Command="{lib12:Inject local:SpeakCommand}" Margin="3" Content="Speak"/>
         </Grid>
         
         <local:Parser Grid.Column="1"></local:Parser>
