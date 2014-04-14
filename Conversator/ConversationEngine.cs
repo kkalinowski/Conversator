@@ -1,11 +1,9 @@
-﻿using System.Threading;
-using lib12.DependencyInjection;
-using lib12.Extensions;
+﻿using lib12.DependencyInjection;
 using mshtml;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using ThreadingTimer = System.Threading.Timer;
+using Timers = System.Timers;
 
 namespace Conversator
 {
@@ -16,16 +14,12 @@ namespace Conversator
         private const string SayItButtonId = "sayit";
         private const string SayItTextBoxId = "stimulus";
         private const int WaitTime = 100000;
-        private const int TimerSpan = 500;
+        private const int TimerInterval = 500;
 
-        private IHTMLDocument2 document;
-        private dynamic sayItButton;
-        private dynamic sayItTextBox;
-
-        private List<string> conversation;
+        private readonly List<string> conversation;
         private string conversationText;
 
-        private ThreadingTimer timer;
+        private readonly Timers.Timer timer;
 
         public WebBrowser Browser { get; set; }
 
@@ -34,16 +28,26 @@ namespace Conversator
             conversationText = string.Empty;
             conversation = new List<string>();
             InitBrowser(ConversatorAddress);
-            timer = new ThreadingTimer(TimerTick, null, TimerSpan, Timeout.Infinite);
+            timer = new Timers.Timer(TimerInterval);
+            timer.Elapsed += timer_Elapsed;
         }
 
         public string Say(string text)
         {
+            var document = (IHTMLDocument2)Browser.Document.DomDocument;
+            var sayItButton = document.all.item(SayItButtonId);
+            var sayItTextBox = document.all.item(SayItTextBoxId);
+
             sayItTextBox.Value = text;
             sayItButton.Click();
+
             conversation.Add(text);
             conversationText = conversationText + text + Environment.NewLine;
-            timer.Change(0, TimerSpan);
+
+            document = (IHTMLDocument2)Browser.Document.DomDocument;
+            var botText = document.all.item("bot");
+
+            //timer.Enabled = true;
             return conversationText;
         }
 
@@ -53,10 +57,6 @@ namespace Conversator
             Browser.Navigate(url);
 
             WaitTillLoad();
-
-            document = (IHTMLDocument2)Browser.Document.DomDocument;
-            sayItButton = document.all.item(SayItButtonId);
-            sayItTextBox = document.all.item(SayItTextBoxId);
         }
 
         private void WaitTillLoad()
@@ -86,10 +86,11 @@ namespace Conversator
             }
         }
 
-        private void TimerTick(object arg)
+        void timer_Elapsed(object sender, Timers.ElapsedEventArgs e)
         {
-            dynamic botText = document.all.item("bot");
-            //timer.Change(0, TimerSpan);
+            timer.Enabled = false;
+            //var document = (IHTMLDocument2)Browser.Document.DomDocument;
+            //var botText = document.all.item("bot");
         }
     }
 }
