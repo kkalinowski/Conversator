@@ -1,4 +1,6 @@
-﻿using lib12.DependencyInjection;
+﻿using System.Linq;
+using lib12.DependencyInjection;
+using lib12.Extensions;
 using mshtml;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace Conversator
         private const string ConversatorAddress = "http://www.cleverbot.com/";
         private const string SayItButtonId = "sayit";
         private const string SayItTextBoxId = "stimulus";
+        private const string BotSayId = "bot";
         private const int WaitTime = 100000;
         private const int TimerInterval = 500;
 
@@ -45,7 +48,16 @@ namespace Conversator
             conversationText = conversationText + text + Environment.NewLine;
 
             document = (IHTMLDocument2)Browser.Document.DomDocument;
-            var botText = document.all.item("bot");
+            //var botText = document.all.item("bot");
+            var agilityDocument = new HtmlAgilityPack.HtmlDocument();
+            agilityDocument.LoadHtml(document.activeElement.innerHTML);
+            var bots = agilityDocument.DocumentNode.SelectNodes("//tr[@class='bot']");
+            if (bots.NotNull())
+            {
+                var lastText = bots.LastOrDefault().InnerText.Trim() + Environment.NewLine;
+                conversation.Add(lastText);
+                conversationText += lastText;
+            }
 
             //timer.Enabled = true;
             return conversationText;
