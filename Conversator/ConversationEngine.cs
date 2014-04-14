@@ -28,6 +28,8 @@ namespace Conversator
 
         #region Properties
         public WebBrowser Browser { get; set; }
+        [WireUp]
+        public TextSynthesizer Synthesizer { get; set; }
 
         private string conversationText;
         public string ConversationText
@@ -108,6 +110,7 @@ namespace Conversator
             sayItButton.Click();
 
             AddTextToConversation(text);
+            Synthesizer.Speak(text);
 
             IsWaitingForAnswer = true;
             timer.Enabled = true;
@@ -144,6 +147,7 @@ namespace Conversator
             {
                 var lastText = bots.LastOrDefault().InnerText.Trim();
                 AddTextToConversation(lastText);
+                Synthesizer.Speak(lastText);
                 IsWaitingForAnswer = false;
             }
             else
