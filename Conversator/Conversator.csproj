@@ -75,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ContentConverter.cs" />
     <Compile Include="Parser.xaml.cs">
       <DependentUpon>Parser.xaml</DependentUpon>
     </Compile>

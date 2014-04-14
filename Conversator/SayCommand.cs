@@ -15,7 +15,7 @@ namespace Conversator
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public virtual bool CanExecute(object parameter)
+        public virtual bool CanExecute(object parameter = null)
         {
             return MainViewModel.UserText.IsNotNullAndNotEmpty()
                 && !MainViewModel.ConversationEngine.IsWaitingForAnswer;
@@ -28,7 +28,7 @@ namespace Conversator
         #endregion
 
         #region Execute
-        public void Execute(object parameter)
+        public void Execute(object parameter = null)
         {
             MainViewModel.ConversationEngine.Say(MainViewModel.UserText);
             MainViewModel.UserText = string.Empty;

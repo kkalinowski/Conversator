@@ -24,7 +24,6 @@ namespace Conversator
         #region Fields
         private readonly List<string> conversation;
         private readonly Timers.Timer timer;
-        private int answersCount = 0;
         #endregion
 
         #region Properties
@@ -108,8 +107,7 @@ namespace Conversator
             sayItTextBox.Value = text;
             sayItButton.Click();
 
-            conversation.Add(text);
-            ConversationText = ConversationText + text + Environment.NewLine;
+            AddTextToConversation(text);
 
             IsWaitingForAnswer = true;
             timer.Enabled = true;
@@ -138,23 +136,26 @@ namespace Conversator
             var document = (IHTMLDocument2)Browser.Document.DomDocument;
             dynamic form = document.forms.item();
             var agilityDocument = new HtmlAgilityPack.HtmlDocument();
-
-
             agilityDocument.LoadHtml(form.innerHTML);
+
             var shareIcon = agilityDocument.DocumentNode.SelectSingleNode("//span[@id='snipTextIcon']");
             var bots = agilityDocument.DocumentNode.SelectNodes("//tr[@class='bot']");
-            if (shareIcon.NotNull() && bots.NotNull() && bots.Count > answersCount)
+            if (shareIcon.NotNull() && bots.NotNull())
             {
-                var lastText = bots.LastOrDefault().InnerText.Trim() + Environment.NewLine;
-                conversation.Add(lastText);
-                ConversationText += lastText;
-                answersCount++;
+                var lastText = bots.LastOrDefault().InnerText.Trim();
+                AddTextToConversation(lastText);
                 IsWaitingForAnswer = false;
             }
             else
             {
                 timer.Enabled = true;
             }
+        }
+
+        private void AddTextToConversation(string text)
+        {
+            conversation.Add(text);
+            ConversationText += string.Format("- {0}\n", text);
         }
     }
 }
