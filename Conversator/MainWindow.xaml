@@ -5,12 +5,16 @@
         xmlns:lib12="http://schemas.kkalinowski.net/lib12"
         xmlns:local="clr-namespace:Conversator"
         DataContext="{lib12:Inject Type=local:MainViewModel}"
-        Title="Conversator" Height="350" Width="525">
-    
-    <Grid lib12:FluidGrid.Rows="*,50" lib12:FluidGrid.Columns="*,150">
-        <TextBox Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Text}"/>
-        <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding UserText, UpdateSourceTrigger=PropertyChanged}"
+        Title="Conversator" Height="700" Width="1400">
+
+    <Grid lib12:FluidGrid.StackColumns="2">
+        <Grid Grid.Column="0" lib12:FluidGrid.Rows="*,50" lib12:FluidGrid.Columns="*,150">
+            <TextBox Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Text}"/>
+            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding UserText, UpdateSourceTrigger=PropertyChanged}"
                  mah:TextboxHelper.Watermark="Say..." mah:TextboxHelper.ClearTextButton="True"/>
-        <Button Grid.Row="1" Grid.Column="1" Content="Say" Command="{lib12:Inject local:SayCommand}"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="Say" Command="{lib12:Inject local:SayCommand}"/>
+        </Grid>
+        
+        <local:Parser Grid.Column="1"></local:Parser>
     </Grid>
 </mah:MetroWindow>

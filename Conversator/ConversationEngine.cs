@@ -18,7 +18,6 @@ namespace Conversator
         private const int WaitTime = 100000;
         private const int TimerSpan = 500;
 
-        private WebBrowser browser;
         private IHTMLDocument2 document;
         private dynamic sayItButton;
         private dynamic sayItTextBox;
@@ -27,6 +26,8 @@ namespace Conversator
         private string conversationText;
 
         private ThreadingTimer timer;
+
+        public WebBrowser Browser { get; set; }
 
         public ConversationEngine()
         {
@@ -48,13 +49,12 @@ namespace Conversator
 
         private void InitBrowser(string url)
         {
-            browser = new WebBrowser();
-            browser.ScriptErrorsSuppressed = true;
-            browser.Navigate(url);
+            Browser = new WebBrowser { ScriptErrorsSuppressed = true };
+            Browser.Navigate(url);
 
             WaitTillLoad();
 
-            document = (IHTMLDocument2)browser.Document.DomDocument;
+            document = (IHTMLDocument2)Browser.Document.DomDocument;
             sayItButton = document.all.item(SayItButtonId);
             sayItTextBox = document.all.item(SayItTextBoxId);
         }
@@ -65,7 +65,7 @@ namespace Conversator
             var counter = 0;
             while (true)
             {
-                loadStatus = browser.ReadyState;
+                loadStatus = Browser.ReadyState;
                 Application.DoEvents();
                 if ((counter > WaitTime) || (loadStatus == WebBrowserReadyState.Uninitialized)
                     || (loadStatus == WebBrowserReadyState.Loading) || (loadStatus == WebBrowserReadyState.Interactive))
@@ -77,9 +77,9 @@ namespace Conversator
             counter = 0;
             while (true)
             {
-                loadStatus = browser.ReadyState;
+                loadStatus = Browser.ReadyState;
                 Application.DoEvents();
-                if (loadStatus == WebBrowserReadyState.Complete && browser.IsBusy != true)
+                if (loadStatus == WebBrowserReadyState.Complete && Browser.IsBusy != true)
                     break;
 
                 counter++;
