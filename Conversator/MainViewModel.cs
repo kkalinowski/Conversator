@@ -32,11 +32,5 @@ namespace Conversator
         [WireUp]
         public ConversationEngine ConversationEngine { get; set; }
         #endregion
-
-        public MainViewModel()
-        {
-            Text = "asdf";
-            UserText = "asdfasdf";
-        }
     }
 }

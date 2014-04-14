@@ -1,8 +1,11 @@
-﻿using System.IO;
-using System.Net.Mime;
-using System.Windows.Forms;
+﻿using System.Threading;
 using lib12.DependencyInjection;
+using lib12.Extensions;
 using mshtml;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using ThreadingTimer = System.Threading.Timer;
 
 namespace Conversator
 {
@@ -13,22 +16,34 @@ namespace Conversator
         private const string SayItButtonId = "sayit";
         private const string SayItTextBoxId = "stimulus";
         private const int WaitTime = 100000;
+        private const int TimerSpan = 500;
 
         private WebBrowser browser;
         private IHTMLDocument2 document;
         private dynamic sayItButton;
         private dynamic sayItTextBox;
 
+        private List<string> conversation;
+        private string conversationText;
+
+        private ThreadingTimer timer;
+
         public ConversationEngine()
         {
+            conversationText = string.Empty;
+            conversation = new List<string>();
             InitBrowser(ConversatorAddress);
+            timer = new ThreadingTimer(TimerTick, null, TimerSpan, Timeout.Infinite);
         }
 
         public string Say(string text)
         {
             sayItTextBox.Value = text;
             sayItButton.Click();
-            return text + text;
+            conversation.Add(text);
+            conversationText = conversationText + text + Environment.NewLine;
+            timer.Change(0, TimerSpan);
+            return conversationText;
         }
 
         private void InitBrowser(string url)
@@ -65,11 +80,16 @@ namespace Conversator
                 loadStatus = browser.ReadyState;
                 Application.DoEvents();
                 if (loadStatus == WebBrowserReadyState.Complete && browser.IsBusy != true)
-                {
                     break;
-                }
+
                 counter++;
             }
+        }
+
+        private void TimerTick(object arg)
+        {
+            dynamic botText = document.all.item("bot");
+            //timer.Change(0, TimerSpan);
         }
     }
 }

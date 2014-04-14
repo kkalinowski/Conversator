@@ -17,7 +17,7 @@ namespace Conversator
 
         public virtual bool CanExecute(object parameter)
         {
-            return MainViewModel.Text.IsNotNullAndNotEmpty();
+            return MainViewModel.UserText.IsNotNullAndNotEmpty();
         }
         #endregion
 
