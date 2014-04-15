@@ -6,24 +6,22 @@
         xmlns:local="clr-namespace:Conversator"
         xmlns:commands="clr-namespace:Conversator.Commands"
         DataContext="{lib12:Inject Type=local:MainViewModel}"
-        Title="Conversator" Height="700" Width="1400">
+        Title="Conversator" Height="400" Width="400">
 
     <lib12:EventTranscriptions.Transcriptions>
         <lib12:EventTranscription EventName="PreviewKeyDown" Command="{Binding KeyboardCommand}"/>
     </lib12:EventTranscriptions.Transcriptions>
 
-    <Grid lib12:FluidGrid.StackColumns="2">
-        <Grid Grid.Column="0" lib12:FluidGrid.Rows="*,32" lib12:FluidGrid.Columns="*,110,110,110">
-            <TextBox Grid.Row="0" Grid.ColumnSpan="4" Text="{Binding ConversationEngine.ConversationText}" IsReadOnly="True" Margin="3"
-                     TextWrapping="Wrap"/>
-            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding UserText, UpdateSourceTrigger=PropertyChanged}"
-                 mah:TextboxHelper.Watermark="Say..." mah:TextboxHelper.ClearTextButton="True" Margin="3"/>
-            <Button Grid.Row="1" Grid.Column="1" Command="{Binding SayCommand}" Margin="3"
+    <Grid lib12:FluidGrid.Rows="*,32,32">
+        <TextBox Grid.Row="0" Text="{Binding ConversationEngine.ConversationText}" IsReadOnly="True" Margin="3"
+                     TextWrapping="Wrap" Focusable="False"/>
+        <TextBox Name="tUserText" Grid.Row="1" Text="{Binding UserText, UpdateSourceTrigger=PropertyChanged}"
+                 mah:TextboxHelper.Watermark="Say..." mah:TextboxHelper.ClearTextButton="True" Margin="3" LostKeyboardFocus="TUserText_OnLostKeyboardFocus"/>
+        <Grid Grid.Row="2" lib12:FluidGrid.Columns="110,110,110" HorizontalAlignment="Right">
+            <Button Grid.Column="0" Command="{Binding SayCommand}" Margin="3" Focusable="False"
                     Content="{Binding ConversationEngine.IsWaitingForAnswer, Converter={local:ContentConverter}}"/>
-            <Button Grid.Row="1" Grid.Column="2" Command="{lib12:Inject commands:SpeakCommand}" Margin="3" Content="Speak" ToolTip="Click and speak"/>
-            <Button Grid.Row="1" Grid.Column="3" Command="{lib12:Inject commands:InfoCommand}" Margin="3" Content="Info"/>
+            <Button Grid.Column="1" Command="{lib12:Inject commands:SpeakCommand}" Margin="3" Content="Speak" ToolTip="Click and speak" Focusable="False"/>
+            <Button Grid.Column="2" Command="{lib12:Inject commands:InfoCommand}" Margin="3" Content="Info" Focusable="False"/>
         </Grid>
-        
-        <local:Parser Grid.Column="1"></local:Parser>
     </Grid>
 </mah:MetroWindow>

@@ -1,4 +1,6 @@
-﻿using MahApps.Metro.Controls;
+﻿using System.Windows;
+using System.Windows.Input;
+using MahApps.Metro.Controls;
 
 namespace Conversator
 {
@@ -10,6 +12,12 @@ namespace Conversator
         public MainWindow()
         {
             InitializeComponent();
+            tUserText.Focus();
+        }
+
+        private void TUserText_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            tUserText.Focus();
         }
     }
 }

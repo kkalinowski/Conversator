@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-using lib12.DependencyInjection;
+﻿using lib12.DependencyInjection;
 using lib12.Extensions;
 using lib12.WPF.Core;
 using mshtml;
+using System;
+using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Conversator.Logic
 {
@@ -145,6 +146,7 @@ namespace Conversator.Logic
                 AddTextToConversation(lastText);
                 Synthesizer.Speak(lastText);
                 IsWaitingForAnswer = false;
+                CommandManager.InvalidateRequerySuggested();
             }
             else
             {
