@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
-using lib12.Collections;
 using lib12.DependencyInjection;
 
-namespace Conversator
+namespace Conversator.Commands
 {
     [Singleton]
-    public class SpeakCommand : ICommand
+    public class InfoCommand : ICommand
     {
         #region CanExecute
         public event EventHandler CanExecuteChanged
@@ -17,21 +17,14 @@ namespace Conversator
 
         public virtual bool CanExecute(object parameter = null)
         {
-            return !MainViewModel.ConversationEngine.IsWaitingForAnswer;
+            return true;
         }
-        #endregion
-
-        #region Props
-        [WireUp]
-        public MainViewModel MainViewModel { get; set; }
-        [WireUp]
-        public SpeechRecognizer SpeechRecognizer { get; set; }
         #endregion
 
         #region Execute
         public void Execute(object parameter = null)
         {
-            SpeechRecognizer.Recognize();
+            MessageBox.Show("Application developed by Krzysztof Kalinowski - kkalinowski.net. Logic by www.cleverbot.com, speech by Microsoft.Speech library, look by MahApps", "Info");
         }
         #endregion
     }

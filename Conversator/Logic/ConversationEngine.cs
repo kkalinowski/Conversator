@@ -1,14 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
 using lib12.DependencyInjection;
 using lib12.Extensions;
 using lib12.WPF.Core;
 using mshtml;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using Timers = System.Timers;
 
-namespace Conversator
+namespace Conversator.Logic
 {
     [Singleton]
     public class ConversationEngine : NotifyingObject
@@ -22,7 +20,7 @@ namespace Conversator
         #endregion
 
         #region Fields
-        private readonly Timers.Timer timer;
+        private readonly System.Timers.Timer timer;
         #endregion
 
         #region Properties
@@ -58,7 +56,7 @@ namespace Conversator
         {
             ConversationText = string.Empty;
             InitBrowser(ConversatorAddress);
-            timer = new Timers.Timer(TimerInterval);
+            timer = new System.Timers.Timer(TimerInterval);
             timer.Elapsed += timer_Elapsed;
         }
 
@@ -114,7 +112,7 @@ namespace Conversator
             timer.Enabled = true;
         }
 
-        void timer_Elapsed(object sender, Timers.ElapsedEventArgs e)
+        void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             timer.Enabled = false;
             InvokeOnFormBrowserThread(ParseAnswer);

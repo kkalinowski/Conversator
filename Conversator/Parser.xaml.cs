@@ -1,4 +1,5 @@
-﻿using lib12.DependencyInjection;
+﻿using Conversator.Logic;
+using lib12.DependencyInjection;
 using System.Windows.Controls;
 
 namespace Conversator

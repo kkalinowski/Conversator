@@ -1,7 +1,7 @@
 ﻿using System.Speech.Synthesis;
 using lib12.DependencyInjection;
 
-namespace Conversator
+namespace Conversator.Logic
 {
     [Singleton]
     public class TextSynthesizer

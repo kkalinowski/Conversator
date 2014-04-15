@@ -80,14 +80,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ContentConverter.cs" />
-    <Compile Include="InfoCommand.cs" />
+    <Compile Include="Commands\InfoCommand.cs" />
     <Compile Include="Parser.xaml.cs">
       <DependentUpon>Parser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SayCommand.cs" />
-    <Compile Include="SpeakCommand.cs" />
-    <Compile Include="SpeechRecognizer.cs" />
-    <Compile Include="TextSynthesizer.cs" />
+    <Compile Include="Commands\SayCommand.cs" />
+    <Compile Include="Commands\SpeakCommand.cs" />
+    <Compile Include="Logic\SpeechRecognizer.cs" />
+    <Compile Include="Logic\TextSynthesizer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -96,7 +96,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ConversationEngine.cs" />
+    <Compile Include="Logic\ConversationEngine.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

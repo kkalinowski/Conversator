@@ -3,9 +3,12 @@ using System.Speech.Recognition;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Conversator.Commands;
+using Conversator.Logic;
 using lib12.DependencyInjection;
 using lib12.WPF.Core;
 using lib12.WPF.EventTranscriptions;
+using SpeechRecognizer = Conversator.Logic.SpeechRecognizer;
 
 namespace Conversator
 {

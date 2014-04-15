@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Speech.Recognition;
-using System.Windows;
 using lib12.DependencyInjection;
 
-namespace Conversator
+namespace Conversator.Logic
 {
     [Singleton]
     public class SpeechRecognizer

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
+using lib12.Collections;
 using lib12.DependencyInjection;
 
-namespace Conversator
+namespace Conversator.Commands
 {
     [Singleton]
-    public class InfoCommand : ICommand
+    public class SayCommand : ICommand
     {
         #region CanExecute
         public event EventHandler CanExecuteChanged
@@ -17,14 +17,21 @@ namespace Conversator
 
         public virtual bool CanExecute(object parameter = null)
         {
-            return true;
+            return MainViewModel.UserText.IsNotNullAndNotEmpty()
+                && !MainViewModel.ConversationEngine.IsWaitingForAnswer;
         }
+        #endregion
+
+        #region Props
+        [WireUp]
+        public MainViewModel MainViewModel { get; set; }
         #endregion
 
         #region Execute
         public void Execute(object parameter = null)
         {
-            MessageBox.Show("Application developed by Krzysztof Kalinowski - kkalinowski.net. Logic by www.cleverbot.com, speech by Microsoft.Speech library, look by MahApps", "Info");
+            MainViewModel.ConversationEngine.Say(MainViewModel.UserText);
+            MainViewModel.UserText = string.Empty;
         }
         #endregion
     }
